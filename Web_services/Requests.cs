@@ -16,9 +16,9 @@ namespace Web_services
 
         public static HttpWebResponse MakeGetRequest()
         {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("https://jsonplaceholder.typicode.com/users");
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("https://api.github.com/gists/public");
             request.Method = "GET";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();        
             return response;
         }
         public static string GetResponseBody()
@@ -77,32 +77,19 @@ namespace Web_services
             return response.StatusCode;
         }
 
-        public static async Task<string> GetAuthorizeToken()
-        {
-            string responseObj = string.Empty;
+        public static async Task<HttpResponseMessage> GetAuthorizeTokenAsync()
+        {       
             using (var client = new HttpClient())
             { 
                 client.BaseAddress = new Uri("https://github.com/login/oauth/authorize");
- 
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));  
-                HttpResponseMessage response = new HttpResponseMessage();
-                List<KeyValuePair<string, string>> allIputParams = new List<KeyValuePair<string, string>>();
+                var token = "YOUR_Token";
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-                HttpContent requestParams = new FormUrlEncodedContent(allIputParams);
-
-                response = await client.PostAsync("ghu_16C7e42F292c6912E7710c838347Ae178B4a", requestParams).ConfigureAwait(false);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    // Reading Response.   
-                }
-            }
-
-            return responseObj;
+                HttpResponseMessage response = await client.GetAsync("https://api.github.com/gists/");
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                return response;
+            }          
         }
-
-
-
-
     }
 }
