@@ -12,20 +12,21 @@ namespace Web_services
         [Test]        
         public void HttpStatusCodeTest()
         {
-           Assert.AreEqual("OK", Requests.GetStatusCode().ToString(), "Status code is NOT 200");
+           Assert.AreEqual(HttpStatusCodes.OK.ToString(), Requests.GetStatusCode().ToString(), "Status code is NOT 200");
         }
 
         [Test]
         public void HttpResponseHeaderTest()
         {
-            Assert.AreEqual("application/json; charset=utf-8", Requests.GetResponseHeader(), "Response header doesn't orrespond to expected");
+            Assert.AreEqual("application/json; charset=utf-8", Requests.GetResponseHeader(), "Response header doesn't correspond to expected");
         }
 
         [Test]
         public void HttpResponseBodyTest()
         {
+            var expectedLength = 10;
             Root[] users = JsonConvert.DeserializeObject<Root[]>(Requests.GetResponseBody());
-            Assert.AreEqual(10, users.Length, "Users quantity is not 10");
+            Assert.AreEqual(expectedLength, users.Length, "Users quantity doesnt equal to expected");
         }
     }
 }

@@ -1,23 +1,25 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Web_services
 {
+
+    public enum HttpStatusCodes
+    {
+        OK = 200,
+        Unauthorized = 401,
+        Forbidden = 403,
+        InternalServerError = 500
+    }
     public static class Requests
     {
-
         public static HttpWebResponse MakeGetRequest()
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("https://jsonplaceholder.typicode.com/users");
             request.Method = "GET";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            return response;
+            return (HttpWebResponse)request.GetResponse();
         }
         public static string GetResponseBody()
         {
@@ -35,17 +37,15 @@ namespace Web_services
 
         public static HttpStatusCode GetStatusCode()
         {
-            HttpStatusCode statusCode = MakeGetRequest().StatusCode;
-            return statusCode;
+            return MakeGetRequest().StatusCode;
         }
 
         public static string GetResponseHeader()
         {
-            string responceHeader = MakeGetRequest().GetResponseHeader("Content-Type");
-            return responceHeader;
+            return MakeGetRequest().GetResponseHeader("Content-Type");
         }
 
-        public static HttpWebResponse MakePostRequest()
+        public static HttpWebResponse MakePostRequest(string id)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("https://jsonplaceholder.typicode.com/users");
             request.Method = "POST";
@@ -54,12 +54,10 @@ namespace Web_services
             {
                 using (StreamWriter streamWriter = new StreamWriter(stream))
                 {
-                    streamWriter.Write("id: 11");
+                    streamWriter.Write(id);
                 }
             }
             return response;
         }
-
-
     }
 }
