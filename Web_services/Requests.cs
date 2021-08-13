@@ -1,13 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Web_services
 {
@@ -77,19 +71,21 @@ namespace Web_services
             return response.StatusCode;
         }
 
-        public static async Task<HttpResponseMessage> GetAuthorizeTokenAsync()
-        {       
-            using (var client = new HttpClient())
-            { 
-                client.BaseAddress = new Uri("https://github.com/login/oauth/authorize");
-                var token = "YOUR_Token";
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
-                HttpResponseMessage response = await client.GetAsync("https://api.github.com/gists/");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                return response;
-            }          
+        public static HttpRequestMessage BuildAuthenticationRequest(string url, string token) 
+        {
+            var uriBuilder = new UriBuilder(url);
+            uriBuilder.Query = $"access_token={token}";
+            var request = new HttpRequestMessage();
+            request.RequestUri = uriBuilder.Uri;
+            request.Headers.Add("User-Agent", "My C# Client");
+            return request;
         }
+
+        public static HttpResponseMessage GetResponse(HttpRequestMessage request)
+        {
+            var client = new HttpClient();
+            HttpResponseMessage response = client.SendAsync(request).Result;       
+            return response;
+        }              
     }
 }

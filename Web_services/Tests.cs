@@ -12,8 +12,11 @@ namespace Web_services
         [Test]        
         public void HttpStatusCodeTest()
         {
-            var response = Requests.GetAuthorizeTokenAsync();
-            Assert.AreEqual("OK",response.Status, "Status code is NOT 200");
+            var url = "https://gist.github.com/KDunchyk/21242eb6b0de3b39c94039c31ddc2bef";
+            var token = "Your_token";
+            var request = Requests.BuildAuthenticationRequest(url, token);
+            var response = Requests.GetResponse(request);
+            Assert.AreEqual("OK", response.StatusCode.ToString(), "Status code is NOT 200");
         }
 
         [Test]
